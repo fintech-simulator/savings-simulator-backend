@@ -4,7 +4,7 @@ import {
   UserRepositoryToken,
 } from '../../domain/repositories/user.repository';
 import { User } from '../../domain/entities/user.entity';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export interface CreateOnboardingDto {
   name: string;
@@ -43,7 +43,7 @@ export class CreateOnboardingUseCase {
 
     return {
       user,
-      requestId: uuidv4(),
+      requestId: randomUUID(),
     };
   }
 }
