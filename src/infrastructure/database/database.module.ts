@@ -15,7 +15,7 @@ import { SeedService } from './seed.service';
         type: 'postgres',
         url: configService.get<string>('DATABASE_URL'),
         entities: [ProductOrmEntity, UserOrmEntity, SimulationOrmEntity],
-        synchronize: true, // Only for development/demo
+        synchronize: configService.get<string>('NODE_ENV') !== 'production',
         ssl: {
           rejectUnauthorized: false,
         },
