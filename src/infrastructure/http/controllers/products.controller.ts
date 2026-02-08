@@ -9,7 +9,9 @@ export class ProductsController {
   constructor(private readonly getProductsUseCase: GetProductsUseCase) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all savings products with optional filters' })
+  @ApiOperation({
+    summary: 'Get all savings products with pagination and optional filters',
+  })
   async getProducts(@Query() filters: ProductFiltersDto) {
     return this.getProductsUseCase.execute(filters);
   }

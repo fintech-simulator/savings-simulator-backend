@@ -16,7 +16,9 @@ export class TypeOrmProductRepository implements ProductRepository {
   async findAll(filters?: {
     name?: string;
     type?: string;
-  }): Promise<Product[]> {
+    page?: number;
+    limit?: number;
+  }): Promise<{ data: Product[]; total: number }> {
     const where: FindOptionsWhere<ProductOrmEntity> = {};
     if (filters?.name) {
       where['name'] = Like(`%${filters.name}%`);
@@ -25,8 +27,21 @@ export class TypeOrmProductRepository implements ProductRepository {
       where['type'] = filters.type;
     }
 
-    const ormProducts = await this.repository.find({ where });
-    return ormProducts.map(ProductMapper.toDomain);
+    const page = filters?.page || 1;
+    const limit = filters?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const [ormProducts, total] = await this.repository.findAndCount({
+      where,
+      skip,
+      take: limit,
+      order: { name: 'ASC' } as any,
+    });
+
+    return {
+      data: ormProducts.map(ProductMapper.toDomain),
+      total,
+    };
   }
 
   async findById(id: string): Promise<Product | null> {

@@ -15,7 +15,29 @@ export class GetProductsUseCase {
   async execute(filters?: {
     name?: string;
     type?: string;
-  }): Promise<Product[]> {
-    return this.productRepository.findAll(filters);
+    page?: number;
+    limit?: number;
+  }): Promise<{
+    data: Product[];
+    meta: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  }> {
+    const { data, total } = await this.productRepository.findAll(filters);
+    const limit = filters?.limit || 10;
+    const page = filters?.page || 1;
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 }
