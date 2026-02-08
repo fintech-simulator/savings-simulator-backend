@@ -18,9 +18,6 @@ export class SeedService implements OnModuleInit {
   }
 
   private async seedProducts() {
-    const count = await this.productRepository.count();
-    if (count > 0) return;
-
     const products = [
       {
         name: 'Cuenta de Ahorros Tradicional',
