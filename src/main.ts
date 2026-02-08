@@ -26,7 +26,7 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   if (process.env.NODE_ENV !== 'production') {
-    await app.listen(process.env.PORT ?? 3000);
+    await app.listen(process.env.PORT ?? 4005);
     console.log(`Application is running on: ${await app.getUrl()}`);
   } else {
     await app.init();
@@ -35,13 +35,9 @@ async function bootstrap() {
   return app.getHttpAdapter().getInstance();
 }
 
-const expressApp = bootstrap();
+const expressAppPromise = bootstrap();
 
 export default async (req: unknown, res: unknown) => {
-  const app = await expressApp;
+  const app = await expressAppPromise;
   (app as any)(req, res);
 };
-
-if (process.env.NODE_ENV !== 'production') {
-  bootstrap().catch((err: Error) => console.error(err));
-}
