@@ -66,3 +66,7 @@ export default async (req: unknown, res: unknown) => {
     }
   }
 };
+
+if (process.env.NODE_ENV !== 'production') {
+  getApp().catch((err) => console.error('Failed to start local server:', err));
+}

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, FindOptionsWhere } from 'typeorm';
+import { Repository, ILike, FindOptionsWhere } from 'typeorm';
 import { ProductRepository } from '../../../domain/repositories/product.repository';
 import { Product } from '../../../domain/entities/product.entity';
 import { ProductOrmEntity } from '../entities/product.orm-entity';
@@ -21,7 +21,7 @@ export class TypeOrmProductRepository implements ProductRepository {
   }): Promise<{ data: Product[]; total: number }> {
     const where: FindOptionsWhere<ProductOrmEntity> = {};
     if (filters?.name) {
-      where['name'] = Like(`%${filters.name}%`);
+      where['name'] = ILike(`%${filters.name}%`);
     }
     if (filters?.type) {
       where['type'] = filters.type;
