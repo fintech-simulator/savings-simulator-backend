@@ -35,9 +35,34 @@ async function bootstrap() {
   return app.getHttpAdapter().getInstance();
 }
 
-const expressAppPromise = bootstrap();
+let cachedApp: any;
+
+async function getApp() {
+  if (!cachedApp) {
+    console.log('Available Env Vars:', Object.keys(process.env));
+    console.log('Initializing NestJS application...');
+    try {
+      cachedApp = await bootstrap();
+      console.log('NestJS application initialized successfully.');
+    } catch (err) {
+      console.error('Failed to initialize NestJS application:', err);
+      throw err;
+    }
+  }
+  return cachedApp;
+}
 
 export default async (req: unknown, res: unknown) => {
-  const app = await expressAppPromise;
-  (app as any)(req, res);
+  try {
+    const app = await getApp();
+    (app as any)(req, res);
+  } catch (err) {
+    console.error('Handler error:', err);
+    if (res && (res as any).status) {
+      (res as any).status(500).json({
+        message: 'Internal Server Error',
+        error: (err as Error).message,
+      });
+    }
+  }
 };

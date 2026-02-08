@@ -16,8 +16,11 @@ import { SeedService } from './seed.service';
         url: configService.get<string>('DATABASE_URL'),
         entities: [ProductOrmEntity, UserOrmEntity, SimulationOrmEntity],
         synchronize: configService.get<string>('NODE_ENV') !== 'production',
-        ssl: {
-          rejectUnauthorized: false,
+        ssl: true,
+        extra: {
+          ssl: {
+            rejectUnauthorized: false,
+          },
         },
       }),
     }),
