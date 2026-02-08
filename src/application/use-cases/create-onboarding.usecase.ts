@@ -5,6 +5,7 @@ import {
 } from '../../domain/repositories/user.repository';
 import { User } from '../../domain/entities/user.entity';
 import { randomUUID } from 'crypto';
+import { RecaptchaService } from '../services/recaptcha.service';
 
 export interface CreateOnboardingDto {
   name: string;
@@ -18,13 +19,21 @@ export class CreateOnboardingUseCase {
   constructor(
     @Inject(UserRepositoryToken)
     private readonly userRepository: UserRepository,
+    private readonly recaptchaService: RecaptchaService,
   ) {}
 
   async execute(
     dto: CreateOnboardingDto,
   ): Promise<{ user: User; requestId: string }> {
-    if (dto.recaptchaToken !== 'OK') {
-      throw new BadRequestException('Invalid recaptcha token');
+    // Validate recaptcha token using the service
+    const recaptchaResult = await this.recaptchaService.validateToken(
+      dto.recaptchaToken,
+    );
+
+    if (!recaptchaResult.success) {
+      throw new BadRequestException(
+        recaptchaResult.message || 'Invalid recaptcha token',
+      );
     }
 
     const existingUser = await this.userRepository.findByEmail(dto.email);

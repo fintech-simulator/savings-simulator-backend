@@ -5,12 +5,15 @@ import { TypeOrmUserRepository } from '../infrastructure/database/repositories/t
 import { UserRepositoryToken } from '../domain/repositories/user.repository';
 import { CreateOnboardingUseCase } from '../application/use-cases/create-onboarding.usecase';
 import { OnboardingController } from '../infrastructure/http/controllers/onboarding.controller';
+import { RecaptchaService } from '../application/services/recaptcha.service';
+import { RecaptchaController } from '../infrastructure/http/controllers/recaptcha.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserOrmEntity])],
-  controllers: [OnboardingController],
+  controllers: [OnboardingController, RecaptchaController],
   providers: [
     CreateOnboardingUseCase,
+    RecaptchaService,
     {
       provide: UserRepositoryToken,
       useClass: TypeOrmUserRepository,
