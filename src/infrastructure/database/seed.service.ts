@@ -1,8 +1,4 @@
-import { Injectable, OnModuleInit, Inject } from '@nestjs/common';
-import {
-  ProductRepository,
-  ProductRepositoryToken,
-} from '../../domain/repositories/product.repository';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductOrmEntity } from './entities/product.orm-entity';
@@ -15,6 +11,9 @@ export class SeedService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
+    if (process.env.NODE_ENV === 'production') {
+      return;
+    }
     await this.seedProducts();
   }
 

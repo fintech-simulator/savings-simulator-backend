@@ -21,6 +21,11 @@ import { SeedService } from './seed.service';
         },
       }),
     }),
+    TypeOrmModule.forFeature([
+      ProductOrmEntity,
+      UserOrmEntity,
+      SimulationOrmEntity,
+    ]),
   ],
   providers: [SeedService],
   exports: [TypeOrmModule],
