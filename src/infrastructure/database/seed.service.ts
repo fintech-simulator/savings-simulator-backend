@@ -18,6 +18,16 @@ export class SeedService implements OnModuleInit {
   }
 
   private async seedProducts() {
+    // Check if products already exist to prevent re-seeding
+    const existingCount = await this.productRepository.count();
+
+    if (existingCount > 0) {
+      console.log(
+        `✓ Database already has ${existingCount} products. Skipping seed.`,
+      );
+      return;
+    }
+
     const products = [
       {
         name: 'Cuenta de Ahorros Tradicional',
@@ -281,16 +291,13 @@ export class SeedService implements OnModuleInit {
       },
     ];
 
-    console.log(
-      `Cleaning existing products and seeding ${products.length} new products...`,
-    );
-    await this.productRepository.clear();
+    console.log(`→ Seeding ${products.length} new products...`);
 
     for (const prod of products) {
       const product = this.productRepository.create(prod);
       await this.productRepository.save(product);
     }
 
-    console.log('Database successfully seeded with expanded product catalog.');
+    console.log('✓ Database successfully seeded with 26 products.');
   }
 }
