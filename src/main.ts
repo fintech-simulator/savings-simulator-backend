@@ -23,17 +23,18 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  // Use CDN for Swagger UI assets instead of local files
-  // In serverless environments (Vercel), static files from node_modules aren't available,
-  // so we load CSS/JS from CDN to ensure the docs UI renders correctly in production
+
+  // Configure Swagger UI for serverless deployment (Vercel)
+  // Use unpkg CDN for reliable asset delivery in production
   SwaggerModule.setup('api/docs', app, document, {
-    customCssUrl: [
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.31.0/swagger-ui.min.css',
-    ],
+    customCssUrl: 'https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css',
     customJs: [
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.31.0/swagger-ui-bundle.js',
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.31.0/swagger-ui-standalone-preset.js',
+      'https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js',
+      'https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-standalone-preset.js',
     ],
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
   });
 
   if (process.env.NODE_ENV !== 'production') {
